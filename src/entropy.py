@@ -1,10 +1,18 @@
 import numpy as np
 
-def generate_hist(a, b=None, *vars, bins=200):
-    if b is not None:
-        nans = np.logical_or(np.isnan(a), np.isnan(b))
-        a, b = a[~nans], b[~nans]
-        n = np.histogram2d(a,b,bins=bins)[0]
+def generate_hist(a, *vars, bins=200):
+    if vars:
+        nans = np.logical_or(np.isnan(a), np.isnan(vars[0]))
+        print(vars)
+        for var in vars[1:]:
+            nans = np.logical_or(nans, np.isnan(var))
+     
+        for var in vars:
+            var = var[~nans]
+        a = a[~nans]
+        
+        print(a.shape(),*vars.shape())
+        n = np.histogramdd(np.array([a,*vars]), bins=bins)[0]
         n = n[n!=0]
         return n
     a = a[~np.isnan(a)]
@@ -24,7 +32,7 @@ def H(x, y=None, *z, conditional=False, bins=200):
     if conditional:
         return H(x, y, bins=bins) - H(y, bins=bins)
 
-    ab = generate_hist(x, y, z, bins=bins)
+    ab = generate_hist(x, y, *z, bins=bins)
     p_ab = ab/sum(ab)
     return shannon_entropy(p_ab)
 
