@@ -1,5 +1,5 @@
-import pandas as pd
 import re
+import pandas as pd
 from numpy import nan
 
 
@@ -40,7 +40,7 @@ def read_OMNI(filepath: str, formatpath: str, return_columns=False):
         filepath_or_buffer=filepath,
         parse_dates=[[0, 1, 2, 3]],
         date_format="%Y %j %H %M",
-        delim_whitespace=True,
+        sep=r"\s+",
         header=None,
     )
 
@@ -54,8 +54,8 @@ def read_OMNI(filepath: str, formatpath: str, return_columns=False):
             types.append(format_row[-1])
 
     df.columns = columns
-    for i, format in enumerate(types):
-        df.loc[df[columns[i]] == nan_value(format), columns[i]] = nan
+    for i, encoding in enumerate(types):
+        df.loc[df[columns[i]] == nan_value(encoding), columns[i]] = nan
 
     if return_columns:
         return df, columns
