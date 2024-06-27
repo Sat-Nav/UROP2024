@@ -10,8 +10,8 @@ def generate_hist(a, *vars, bins=200):
         for var in vars:
             var = var[~nans]
         a = a[~nans]
-        
-        print(a.shape(),*vars.shape())
+        print(type(a), type(vars))
+        print(a.shape(), vars.shape())
         n = np.histogramdd(np.array([a,*vars]), bins=bins)[0]
         n = n[n!=0]
         return n
