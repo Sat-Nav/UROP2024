@@ -35,7 +35,7 @@ def nan_value(column_format: str):
             return None
 
 
-def read_OMNI(filepath: str, formatpath: str, return_columns=False):
+def read_OMNI(filepath: str, formatpath: str):
     df = pd.read_csv(
         filepath_or_buffer=filepath,
         parse_dates=[[0, 1, 2, 3]],
@@ -56,7 +56,4 @@ def read_OMNI(filepath: str, formatpath: str, return_columns=False):
     df.columns = columns
     for i, encoding in enumerate(types):
         df.loc[df[columns[i]] == nan_value(encoding), columns[i]] = nan
-
-    if return_columns:
-        return df, columns
     return df

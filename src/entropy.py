@@ -1,20 +1,18 @@
 import numpy as np
 
-def generate_hist(a, *vars, bins=200):
-    if vars:
-        nans = np.logical_or(np.isnan(a), np.isnan(vars[0]))
-        print(vars)
-        for var in vars[1:]:
-            nans = np.logical_or(nans, np.isnan(var))
-     
-        for var in vars:
-            var = var[~nans]
+def generate_hist(a, *args, bins=200):
+    if args:
+        nans = np.logical_or(np.isnan(a), np.isnan(args[0]))
+        for arg in args[1:]:
+            nans = np.logical_or(nans, np.isnan(arg))
+        variables = []
+        for _, arg in enumerate(args):
+            variables.append(arg[~nans])
         a = a[~nans]
-        print(type(a), type(vars))
-        print(a.shape(), vars.shape())
-        n = np.histogramdd(np.array([a,*vars]), bins=bins)[0]
+        n = np.histogramdd(np.array([a,*variables]).T, bins=bins)[0]
         n = n[n!=0]
         return n
+    
     a = a[~np.isnan(a)]
     n = np.histogram(a, bins=bins)[0]
     n = n[n!=0]
@@ -42,3 +40,17 @@ def MI(x, y, bins=200):
 
 def CMI(x, y, z, bins=200):
     return H(x, z, bins=bins) + H(y, z, bins=bins) - H(x, y, z) - H(z)
+
+def entropy_matrix(df, bins=200):
+    columns = list(list(df))
+    matrix = []
+    for _, column_1 in enumerate(columns):
+        if column_1 == "datetime":
+            continue
+        row = []
+        for __, column_2 in enumerate(columns):
+            if column_2 == "datetime":
+                continue
+            row.append(MI(df[column_1], df[column_2], bins=bins))
+        matrix.append(row)
+    return np.array(matrix)
