@@ -42,14 +42,14 @@ def CMI(x, y, z, bins=200):
     return H(x, z, bins=bins) + H(y, z, bins=bins) - H(x, y, z) - H(z)
 
 def entropy_matrix(df, bins=200):
-    columns = list(list(df))
+    columns = list(df)
     matrix = []
     for _, column_1 in enumerate(columns):
-        if column_1 == "datetime":
+        if column_1 == "Datetime":
             continue
         row = []
         for __, column_2 in enumerate(columns):
-            if column_2 == "datetime":
+            if column_2 == "Datetime":
                 continue
             row.append(MI(df[column_1], df[column_2], bins=bins))
         matrix.append(row)
