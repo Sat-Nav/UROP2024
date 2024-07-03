@@ -1,9 +1,21 @@
 import numpy as np
-
+from scipy.stats import entropy
+from sklearn.feature_selection import mutual_info_classif
 def generate_hist(a, *args, bins=200):
     if args:
-        nans = np.logical_or(np.isnan(a), np.isnan(args[0]))
+        series_diff = a.shape[0] - args[0].shape[0]
+        if series_diff > 0:
+            targ = np.pad(args[0], (0, series_diff), constant_values = np.nan)
+        else:
+            targ = args[0]
+            a = np.pad(a, (0, -series_diff), constant_values = np.nan)
+        nans = np.logical_or(np.isnan(a), np.isnan(targ))
         for arg in args[1:]:
+            series_diff = nans.shape[0] - arg.shape[0]
+            if series_diff > 0:
+                arg = np.pad(arg, (0, series_diff), constant_values = np.nan)
+            else:
+                a = np.pad(a, (0, -series_diff), constant_values = np.nan)
             nans = np.logical_or(nans, np.isnan(arg))
         variables = []
         for _, arg in enumerate(args):
@@ -18,38 +30,41 @@ def generate_hist(a, *args, bins=200):
     n = n[n!=0]
     return n
 
-def shannon_entropy(p_i):
+def shannon_entropy(p_i, use_scipy = False):
+    if use_scipy:
+        return entropy(p_i, base=2)
     return -sum(p_i*np.log2(p_i))
 
-def H(x, y=None, *z, conditional=False, bins=200):
+def H(x, y=None, *z, conditional=False, bins=200, use_scipy = False):
     if y is None:
         a = generate_hist(x, bins=bins)
         p_a = a/sum(a)
-        return shannon_entropy(p_a)
+        return shannon_entropy(p_a, use_scipy=use_scipy)
 
     if conditional:
-        return H(x, y, bins=bins) - H(y, bins=bins)
+        return H(x, y, bins=bins, use_scipy=use_scipy) - H(y, bins=bins, use_scipy=use_scipy)
 
     ab = generate_hist(x, y, *z, bins=bins)
     p_ab = ab/sum(ab)
-    return shannon_entropy(p_ab)
+    return shannon_entropy(p_ab, use_scipy=use_scipy)
 
-
-def MI(x, y, bins=200):
-    return H(x, bins=bins) + H(y, bins=bins) - H(x,y, bins=bins)
+def MI(x, y, bins=200, use_scipy = False, use_sklearn = False):
+    if use_sklearn:
+        return mutual_info_classif(x, y)
+    return H(x, bins=bins, use_scipy=use_scipy) + H(y, bins=bins, use_scipy=use_scipy) - H(x,y, bins=bins, use_scipy=use_scipy)
 
 def CMI(x, y, z, bins=200):
     return H(x, z, bins=bins) + H(y, z, bins=bins) - H(x, y, z, bins=bins) + H(z, bins=bins)
 
-def entropy_matrix(df, bins=200):
+def entropy_matrix(df, bins=200, ignore_columns=[0]):
     columns = list(df)
     matrix = []
     for i, column_1 in enumerate(columns):
-        if i == 0:
+        if i in ignore_columns:
             continue
         row = []
         for j, column_2 in enumerate(columns):
-            if j == 0:
+            if j in ignore_columns:
                 continue
             row.append(MI(df[column_1], df[column_2], bins=bins))
         matrix.append(row)
