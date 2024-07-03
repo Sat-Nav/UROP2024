@@ -1,0 +1,35 @@
+  FORMAT OF THE SUBSETTED FILE
+    
+    ITEMS                      FORMAT   
+     
+ 1 Year                          I4        
+ 2 Day                           I4        
+ 3 Hour                          I3        
+ 4 Minute                        I3        
+ 5 Field magnitude average, nT   F8.2      
+ 6 BX, nT (GSE, GSM)             F8.2      
+ 7 BY, nT (GSE)                  F8.2      
+ 8 BZ, nT (GSE)                  F8.2      
+ 9 BY, nT (GSM)                  F8.2      
+10 BZ, nT (GSM)                  F8.2      
+11 RMS SD B scalar, nT           F8.2      
+12 RMS SD field vector, nT       F8.2      
+13 Speed, km/s                   F8.1      
+14 Vx Velocity,km/s              F8.1      
+15 Vy Velocity, km/s             F8.1      
+16 Vz Velocity, km/s             F8.1      
+17 Proton Density, n/cc          F7.2      
+18 Proton Temperature, K         F9.0      
+19 Na/Np Ratio                   F7.3      
+20 Flow pressure, nPa            F6.2      
+21 Electric field, mV/m          F7.2      
+22 Plasma beta                   F7.2      
+23 Alfven mach number            F6.1      
+24 Magnetosonic Mach number      F5.1      
+25 AE-index, nT                  I6        
+26 AL-index, nT                  I6        
+27 AU-index, nT                  I6        
+28 SYM/D, nT                     I6        
+29 SYM/H, nT                     I6        
+30 ASY/D, nT                     I6        
+31 ASY/H, nT                     I6        

@@ -48,12 +48,15 @@ def read_OMNI(filepath: str, formatpath: str):
         format_file = f.read().split("\n")[8:-1]  # ignoring date/time and file header
         columns = ["Datetime"]
         types = [None]
-        for i, row in enumerate(format_file):
-            format_row = re.split(r",*\s+", row.strip())
-            columns.append(format_row[1])
+        for _, row in enumerate(format_file):
+            format_row = re.split(r"\s+", row.strip())
+            columns.append(" ".join(format_row[1:-1]))
             types.append(format_row[-1])
 
     df.columns = columns
     for i, encoding in enumerate(types):
-        df.loc[df[columns[i]] == nan_value(encoding), columns[i]] = nan
+        try:
+            df.loc[df[columns[i]] == nan_value(encoding), columns[i]] = np.nan
+        except KeyError:
+            pass
     return df
