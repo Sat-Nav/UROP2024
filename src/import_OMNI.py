@@ -56,7 +56,7 @@ def read_OMNI(filepath: str, formatpath: str):
     df.columns = columns
     for i, encoding in enumerate(types):
         try:
-            df.loc[df[columns[i]] == nan_value(encoding), columns[i]] = np.nan
+            df.loc[df[columns[i]] == nan_value(encoding), columns[i]] = nan
         except KeyError:
             pass
     return df
