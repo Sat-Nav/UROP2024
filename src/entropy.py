@@ -44,12 +44,12 @@ def CMI(x, y, z, bins=200):
 def entropy_matrix(df, bins=200):
     columns = list(df)
     matrix = []
-    for _, column_1 in enumerate(columns):
-        if column_1 == "Datetime":
+    for i, column_1 in enumerate(columns):
+        if i == 0:
             continue
         row = []
-        for __, column_2 in enumerate(columns):
-            if column_2 == "Datetime":
+        for j, column_2 in enumerate(columns):
+            if j == 0:
                 continue
             row.append(MI(df[column_1], df[column_2], bins=bins))
         matrix.append(row)
