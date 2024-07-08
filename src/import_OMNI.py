@@ -49,8 +49,11 @@ def read_OMNI(filepath: str, formatpath: str):
         columns = ["Datetime"]
         types = [None]
         for _, row in enumerate(format_file):
-            format_row = re.split(r"\s+", row.strip())
-            columns.append(" ".join(format_row[1:-1]))
+            format_row = re.split(r",*\s+", row.strip())
+            column_name = [format_row[1]]
+            if column_name[0] in columns:
+                column_name.append(format_row[-2])
+            columns.append(", ".join(column_name))
             types.append(format_row[-1])
 
     df.columns = columns
