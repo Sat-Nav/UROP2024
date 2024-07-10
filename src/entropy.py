@@ -39,7 +39,7 @@ def MI(x, y, bins=200):
     return H(x, bins=bins) + H(y, bins=bins) - H(x,y, bins=bins)
 
 def CMI(x, y, z, bins=200):
-    return H(x, z, bins=bins) + H(y, z, bins=bins) - H(x, y, z, bins=bins) - H(z, bins=bins)
+    return H(x, z, bins=bins) + H(y, z, bins=bins) - H(x, y, z, bins=bins) + H(z, bins=bins)
 
 def entropy_matrix(df, bins=200):
     columns = list(df)
