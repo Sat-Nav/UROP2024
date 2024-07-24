@@ -1,6 +1,7 @@
 import numpy as np
 from scipy.stats import entropy
-from sklearn.feature_selection import mutual_info_classif
+from sklearn.feature_selection import mutual_info_regression
+import pandas as pd
 def generate_hist(a, *args, bins=200):
     if args:
         series_diff = a.shape[0] - args[0].shape[0]
@@ -50,7 +51,8 @@ def H(x, y=None, *z, conditional=False, bins=200, use_scipy = False):
 
 def MI(x, y, bins=200, use_scipy = False, use_sklearn = False):
     if use_sklearn:
-        return mutual_info_classif(x, y)
+        x, y = x.to_numpy(), pd.to_numeric(y).to_numpy()
+        return mutual_info_regression(x, y, n_jobs= -4)
     return H(x, bins=bins, use_scipy=use_scipy) + H(y, bins=bins, use_scipy=use_scipy) - H(x,y, bins=bins, use_scipy=use_scipy)
 
 def CMI(x, y, z, bins=200):
