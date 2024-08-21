@@ -1,7 +1,7 @@
 import numpy as np
 from scipy.stats import entropy
 from sklearn.feature_selection import mutual_info_regression
-import pandas as pd
+
 def generate_hist(a, *args, bins=200):
     if args:
         series_diff = a.shape[0] - args[0].shape[0]
@@ -51,23 +51,24 @@ def H(x, y=None, *z, conditional=False, bins=200, use_scipy = False):
 
 def MI(x, y, bins=200, use_scipy = False, use_sklearn = False):
     if use_sklearn:
-        x, y = x.to_numpy(), pd.to_numeric(y).to_numpy()
-        return mutual_info_regression(x, y, n_jobs= -4)
+        x, y = x.to_numpy(), y.to_numpy()
+        if len(x.shape) == 1:
+            x = x.reshape(-1,1)
+        return mutual_info_regression(x, y, n_jobs= -6)
     return H(x, bins=bins, use_scipy=use_scipy) + H(y, bins=bins, use_scipy=use_scipy) - H(x,y, bins=bins, use_scipy=use_scipy)
 
 def CMI(x, y, z, bins=200):
     return H(x, z, bins=bins) + H(y, z, bins=bins) - H(x, y, z, bins=bins) + H(z, bins=bins)
 
-def entropy_matrix(df, bins=200, ignore_columns=[0]):
+def entropy_matrix(df, bins=200, ignore_columns=[0], use_scipy = False, use_sklearn = False):
     columns = list(df)
+    for i in ignore_columns:
+        columns.pop(i)
     matrix = []
-    for i, column_1 in enumerate(columns):
-        if i in ignore_columns:
-            continue
-        row = []
-        for j, column_2 in enumerate(columns):
-            if j in ignore_columns:
-                continue
-            row.append(MI(df[column_1], df[column_2], bins=bins))
+    for _, column_1 in enumerate(columns):
+        if use_sklearn:
+            row = MI(df[columns], df[column_1], bins=bins, use_sklearn=True)
+        else:
+            row = np.array([MI(df[column_1], df[column_2], bins=bins, use_scipy=use_scipy, use_sklearn=False) for column_2 in columns])
         matrix.append(row)
     return np.array(matrix)
