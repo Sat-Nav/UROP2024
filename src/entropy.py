@@ -31,12 +31,14 @@ def generate_hist(a, *args, bins=200):
     n = n[n!=0]
     return n
 
-def shannon_entropy(p_i, use_scipy = False):
+def shannon_entropy(p_i, use_scipy=False):
     if use_scipy:
         return entropy(p_i, base=2)
     return -sum(p_i*np.log2(p_i))
 
-def H(x, y=None, *z, conditional=False, bins=200, use_scipy = False):
+def H(x, y=None, *z, conditional=False, bins=200, use_scipy=False, knn=False):
+    if knn:
+        return MI(x, x, knn=True)
     if y is None:
         a = generate_hist(x, bins=bins)
         p_a = a/sum(a)
@@ -49,26 +51,31 @@ def H(x, y=None, *z, conditional=False, bins=200, use_scipy = False):
     p_ab = ab/sum(ab)
     return shannon_entropy(p_ab, use_scipy=use_scipy)
 
-def MI(x, y, bins=200, use_scipy = False, use_sklearn = False):
-    if use_sklearn:
+def MI(x, y, bins=200, use_scipy=False, knn=False):
+    if knn:
         x, y = x.to_numpy(), y.to_numpy()
         if len(x.shape) == 1:
             x = x.reshape(-1,1)
         return mutual_info_regression(x, y, n_jobs= -6)
     return H(x, bins=bins, use_scipy=use_scipy) + H(y, bins=bins, use_scipy=use_scipy) - H(x,y, bins=bins, use_scipy=use_scipy)
 
-def CMI(x, y, z, bins=200):
-    return H(x, z, bins=bins) + H(y, z, bins=bins) - H(x, y, z, bins=bins) + H(z, bins=bins)
+def CMI(x, y, z, bins=200, use_scipy=False, knn=False):
+    return (
+        H(x, z, bins=bins, use_scipy=use_scipy) +
+        H(y, z, bins=bins, use_scipy=use_scipy) -
+        H(x, y, z, bins=bins, use_scipy=use_scipy) -
+        H(z, bins=bins, use_scipy=use_scipy)
+    )
 
-def entropy_matrix(df, bins=200, ignore_columns=[0], use_scipy = False, use_sklearn = False):
+def entropy_matrix(df, bins=200, ignore_columns=[0], use_scipy=False, knn=False):
     columns = list(df)
     for i in ignore_columns:
         columns.pop(i)
     matrix = []
     for _, column_1 in enumerate(columns):
-        if use_sklearn:
-            row = MI(df[columns], df[column_1], bins=bins, use_sklearn=True)
+        if knn:
+            row = MI(df[columns], df[column_1], bins=bins, knn=True)
         else:
-            row = np.array([MI(df[column_1], df[column_2], bins=bins, use_scipy=use_scipy, use_sklearn=False) for column_2 in columns])
+            row = np.array([MI(df[column_1], df[column_2], bins=bins, use_scipy=use_scipy, knn=False) for column_2 in columns])
         matrix.append(row)
     return np.array(matrix)

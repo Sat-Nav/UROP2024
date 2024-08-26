@@ -4,6 +4,16 @@ from numpy import nan
 
 
 def nan_value(column_format: str):
+    """
+    Returns the NaN value for a given column format.
+
+    Parameters:
+    column_format (str): The format of the column.
+
+    Returns:
+    int or float or None: The NaN value corresponding to the column format.
+                          Returns None if the column format is not recognized.
+    """
     match column_format:
         case "I3":
             return 99
@@ -36,6 +46,17 @@ def nan_value(column_format: str):
 
 
 def read_OMNI(filepath: str, formatpath: str):
+    """
+    Read OMNI data from a CSV file and apply formatting based on a format file.
+
+    Args:
+        filepath (str): The path to the CSV file containing the OMNI data.
+        formatpath (str): The path to the format file containing the column formatting information.
+
+    Returns:
+        pandas.DataFrame: A DataFrame containing the formatted OMNI data.
+
+    """
     df = pd.read_csv(
         filepath_or_buffer=filepath,
         parse_dates=[[0, 1, 2, 3]],

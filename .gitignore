@@ -8,3 +8,6 @@ ACE/ACE_Browse_Data.txt
 src/__pycache__/import_cdaweb.cpython-312.pyc
 CDAWeb/ac_h0s_swe_20190101000053_20190529235924.cdf
 CDAWeb/ac_h3s_mfi_20190101000000_20190529235959.cdf
+172549/
+src/MI matrices.npy
+src/__pycache__/import_RTSW.cpython-312.pyc
