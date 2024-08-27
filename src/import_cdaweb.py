@@ -14,7 +14,14 @@ def read_CDAWeb(mag_path=None, swepam_path=None):
         cdf = pycdf.CDF(swepam_path)
         d = {}
         for i in cdf:
-            d[i] = cdf[i][...]
+            if i == "metavar0":
+                continue
+            if len(cdf[i][...].shape) == 1:
+                values = cdf[i][...]
+            else:
+                for j, coord in enumerate(cdf["metavar0"][...]):
+                    values = cdf[i][:,j]
+            d[i] = values
         swepam_df = pd.DataFrame.from_dict(d)
     
     if mag_path and swepam_path:

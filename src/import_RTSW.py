@@ -100,6 +100,3 @@ def read_RTSW_ACE(base_path, year, *args):
     swepam_df = swepam_df.drop(["Year", "Month", "Day", "HM"], axis=1)
 
     return mag_df.merge(swepam_df, on="Datetime")
-
-if __name__ == "__main__":
-    print(read_RTSW_ACE("172549/realtime_solarwind/ace", 2010, 12, 1))

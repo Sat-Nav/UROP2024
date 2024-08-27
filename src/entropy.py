@@ -51,15 +51,15 @@ def H(x, y=None, *z, conditional=False, bins=200, use_scipy=False, knn=False):
     p_ab = ab/sum(ab)
     return shannon_entropy(p_ab, use_scipy=use_scipy)
 
-def MI(x, y, bins=200, use_scipy=False, knn=False):
+def MI(x, y, bins=200, use_scipy=False, knn=False, n_cores=-6):
     if knn:
         x, y = x.to_numpy(), y.to_numpy()
         if len(x.shape) == 1:
             x = x.reshape(-1,1)
-        return mutual_info_regression(x, y, n_jobs= -6)
+        return mutual_info_regression(x, y, n_jobs=n_cores)
     return H(x, bins=bins, use_scipy=use_scipy) + H(y, bins=bins, use_scipy=use_scipy) - H(x,y, bins=bins, use_scipy=use_scipy)
 
-def CMI(x, y, z, bins=200, use_scipy=False, knn=False):
+def CMI(x, y, z, bins=200, use_scipy=False):
     return (
         H(x, z, bins=bins, use_scipy=use_scipy) +
         H(y, z, bins=bins, use_scipy=use_scipy) -
@@ -67,14 +67,14 @@ def CMI(x, y, z, bins=200, use_scipy=False, knn=False):
         H(z, bins=bins, use_scipy=use_scipy)
     )
 
-def entropy_matrix(df, bins=200, ignore_columns=[0], use_scipy=False, knn=False):
+def entropy_matrix(df, bins=200, ignore_columns=[0], use_scipy=False, knn=False, n_cores=-6):
     columns = list(df)
     for i in ignore_columns:
         columns.pop(i)
     matrix = []
     for _, column_1 in enumerate(columns):
         if knn:
-            row = MI(df[columns], df[column_1], bins=bins, knn=True)
+            row = MI(df[columns], df[column_1], bins=bins, knn=True, n_cores=n_cores)
         else:
             row = np.array([MI(df[column_1], df[column_2], bins=bins, use_scipy=use_scipy, knn=False) for column_2 in columns])
         matrix.append(row)
