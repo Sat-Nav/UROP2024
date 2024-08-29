@@ -52,8 +52,8 @@ def read_RTSW_ACE(base_path, year, *args):
     swepam_path = "/".join([base_path, "swepam"])
 
     # Read files from the specified path
-    mag_files = [file for file in os.listdir(mag_path) if file.startswith(file_prefix)]
-    swepam_files = [file for file in os.listdir(swepam_path) if file.startswith(file_prefix)]
+    mag_files = [file for file in os.listdir(mag_path) if (file.startswith(file_prefix) and not file.endswith("5m.dat"))]
+    swepam_files = [file for file in os.listdir(swepam_path) if (file.startswith(file_prefix) and not file.endswith("5m.dat"))]
 
     if len(mag_files) == 0:
         raise FileNotFoundError("No Magnetometer data found for the specified date.")
@@ -88,7 +88,7 @@ def read_RTSW_ACE(base_path, year, *args):
             skiprows=18,
             na_values={7:-9999.9, 8:-9999.9, 9:-1.00e+05},
             dtype = {0: str, 1: str, 2: str, 3: str},
-            names = ["Year", "Month", "Day", "HM", "State", "Proton Density", "Speed", "Temperature"]
+            names = ["Year", "Month", "Day", "HM", "State", "Proton Density", "Velocity", "Temperature"]
         )
             for file in swepam_files]
     )

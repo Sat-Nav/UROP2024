@@ -31,3 +31,10 @@ def read_CDAWeb(mag_path=None, swepam_path=None):
     elif swepam_path:
         return swepam_df
     return None
+
+def make_cda_df(mag_path, swepam_path):
+    mag, swepam = read_CDAWeb(mag_path=mag_path, swepam_path=swepam_path)
+    mag = mag.resample("64s", on="Epoch", label="left").mean().reset_index()
+    df = pd.concat([mag, swepam[swepam.columns[1:]]], axis=1)
+    df.rename(columns={"Epoch": "Datetime"}, inplace=True)
+    return df

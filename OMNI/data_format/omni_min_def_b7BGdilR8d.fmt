@@ -1,0 +1,15 @@
+  FORMAT OF THE SUBSETTED FILE
+    
+    ITEMS                      FORMAT   
+     
+ 1 Year                          I4        
+ 2 Day                           I4        
+ 3 Hour                          I3        
+ 4 Minute                        I3        
+ 5 AE-index, nT                  I6        
+ 6 AL-index, nT                  I6        
+ 7 AU-index, nT                  I6        
+ 8 SYM/D, nT                     I6        
+ 9 SYM/H, nT                     I6        
+10 ASY/D, nT                     I6        
+11 ASY/H, nT                     I6        
